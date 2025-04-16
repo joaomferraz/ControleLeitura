@@ -4,6 +4,7 @@ void main() {
   runApp(const MyApp());
 }
 
+// Classe principal do aplicativo
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -11,17 +12,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'BOOKLY',
+      title: 'BOOKLY', // Título do aplicativo
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFE3F2FD), // Fundo azul pastel
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFE3F2FD), // Cor de fundo geral
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+        ), // Esquema de cores baseado no azul
+        useMaterial3: true, // Utilização do Material Design 3
       ),
-      home: const MyHomePage(title: 'BOOKLY'),
+      home: const MyHomePage(title: 'BOOKLY'), // Página inicial do aplicativo
     );
   }
 }
 
+// Página principal do aplicativo, stateful widget
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
@@ -30,36 +34,32 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+// Estado da página principal
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // Índice da página selecionada
 
   final List<String> _generos = [
-    'Ficção',
-    'Não Ficção',
-    'Biografia',
-    'Fantasia',
-    'Romance',
-    'Aventura',
-    'Mistério',
-    'Suspense',
-    'História',
-    'Ciência',
-    'Autoajuda',
+    // Lista de gêneros de livros
+    'Ficção', 'Não Ficção', 'Biografia', 'Fantasia', 'Romance',
+    'Aventura', 'Mistério', 'Suspense', 'História', 'Ciência', 'Autoajuda',
   ];
 
+  // Método para lidar com a troca de item na barra de navegação inferior
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  // Método para lidar com a seleção de um gênero
   void _onGeneroSelecionado(String genero) {
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Gênero selecionado: $genero')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Gênero selecionado: $genero')));
   }
 
+  // Diálogo para adicionar um novo livro
   void _addNewBookDialog() {
     String newBookName = '';
 
@@ -70,9 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text('Adicionar Livro'),
           content: TextField(
             onChanged: (value) => newBookName = value,
-            decoration: const InputDecoration(
-              hintText: 'Nome do livro',
-            ),
+            decoration: const InputDecoration(hintText: 'Nome do livro'),
           ),
           actions: [
             TextButton(
@@ -96,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Widget para construir uma grade vazia
   Widget _buildEmptyGrid(String titulo) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -134,8 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.book_outlined,
-                          size: 40, color: Colors.grey),
+                      Icon(Icons.book_outlined, size: 40, color: Colors.grey),
                       SizedBox(height: 8),
                       Text(
                         'Vazio',
@@ -156,9 +154,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Cores para ícones na barra de navegação inferior
   final Color selectedColor = const Color(0xFF0277BD); // Azul escuro
   final Color unselectedColor = Colors.black54;
 
+  // Widget para construir cada item da barra de navegação inferior
   Widget _buildBottomItem({
     required int index,
     required IconData icon,
@@ -191,6 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
+      // Páginas principais do aplicativo
       _buildEmptyGrid('Meus Livros'),
       _buildEmptyGrid('Favoritos'),
       _buildEmptyGrid('Lidos'),
@@ -198,6 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       drawer: Drawer(
+        // Menu lateral
         child: ListView(
           children: [
             const DrawerHeader(
@@ -207,14 +209,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(color: Colors.black87, fontSize: 24),
               ),
             ),
-            ..._generos.map((genero) => ListTile(
-                  title: Text(genero),
-                  onTap: () => _onGeneroSelecionado(genero),
-                )),
+            ..._generos.map(
+              (genero) => ListTile(
+                // Lista de gêneros no menu lateral
+                title: Text(genero),
+                onTap: () => _onGeneroSelecionado(genero),
+              ),
+            ),
           ],
         ),
       ),
       appBar: AppBar(
+        // Barra superior do aplicativo
         backgroundColor: const Color(0xFFB3E5FC), // Azul claro
         centerTitle: true,
         title: Text(
@@ -226,14 +232,16 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: pages[_selectedIndex],
+      body: pages[_selectedIndex], // Corpo principal do aplicativo
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButton: FloatingActionButton(
+        // Botão flutuante para adicionar livro
         onPressed: _addNewBookDialog,
         tooltip: 'Adicionar Livro',
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(
+        // Barra de navegação inferior
         shape: const CircularNotchedRectangle(),
         notchMargin: 6.0,
         color: Colors.white,
@@ -252,11 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icons.favorite,
                 label: 'Favoritos',
               ),
-              _buildBottomItem(
-                index: 2,
-                icon: Icons.done,
-                label: 'Lidos',
-              ),
+              _buildBottomItem(index: 2, icon: Icons.done, label: 'Lidos'),
             ],
           ),
         ),
