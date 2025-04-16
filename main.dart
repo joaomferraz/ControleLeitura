@@ -13,8 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'BOOKLY',
       theme: ThemeData(
-        // Cores para o fundo e banners
-        scaffoldBackgroundColor: const Color(0xFFE3F2FD),
+        scaffoldBackgroundColor: const Color(0xFFE3F2FD), // Fundo azul pastel
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
@@ -33,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-// Lista de Generos
+
   final List<String> _generos = [
     'Ficção',
     'Não Ficção',
@@ -48,17 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
     'Autoajuda',
   ];
 
-//Acoes quando haver toque
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-  }
-
-  void _addNewBook() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Novo livro adicionado!')),
-    );
   }
 
   void _onGeneroSelecionado(String genero) {
@@ -68,7 +60,42 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-//Caixas para adições de futuros livros
+  void _addNewBookDialog() {
+    String newBookName = '';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Adicionar Livro'),
+          content: TextField(
+            onChanged: (value) => newBookName = value,
+            decoration: const InputDecoration(
+              hintText: 'Nome do livro',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (newBookName.trim().isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Livro "$newBookName" adicionado!')),
+                  );
+                }
+              },
+              child: const Text('Adicionar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildEmptyGrid(String titulo) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -129,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  final Color selectedColor = const Color(0xFF0277BD);
+  final Color selectedColor = const Color(0xFF0277BD); // Azul escuro
   final Color unselectedColor = Colors.black54;
 
   Widget _buildBottomItem({
@@ -139,7 +166,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }) {
     final bool isSelected = _selectedIndex == index;
 
-// Interações com os botões da barra inferior
     return Expanded(
       child: InkWell(
         onTap: () => _onItemTapped(index),
@@ -163,9 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  // drawer de gêneros
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
+    final List<Widget> pages = [
       _buildEmptyGrid('Meus Livros'),
       _buildEmptyGrid('Favoritos'),
       _buildEmptyGrid('Lidos'),
@@ -176,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFB3E5FC)),
+              decoration: BoxDecoration(color: Color(0xFFB3E5FC)), // Azul claro
               child: Text(
                 'Gêneros',
                 style: TextStyle(color: Colors.black87, fontSize: 24),
@@ -201,12 +226,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: _pages[_selectedIndex],
-      
-    // botão para add livros
+      body: pages[_selectedIndex],
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: _addNewBook,
+        onPressed: _addNewBookDialog,
         tooltip: 'Adicionar Livro',
         child: const Icon(Icons.add),
       ),
